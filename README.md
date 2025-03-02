@@ -9,6 +9,4 @@ python -m pip install requests
 
 # Usage
 ## Run the main.py python file in the terminal/CMD using python
-python main.py
-or
-py main.py
+python main.py or py main.py
