@@ -7,7 +7,8 @@ pip install -r requirements.txt
 ### or manualy install requests via pip
 python -m pip install requests
 
-### Usage
+# Usage
+##Run the main.py python file in the terminal/CMD using python
 python main.py
 or
 py main.py
