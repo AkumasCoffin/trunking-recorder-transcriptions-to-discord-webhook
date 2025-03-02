@@ -10,14 +10,14 @@ DATABASE_PATH = r"your_database_path_here" # replace with your database path
 DISCORD_WEBHOOK_URL = "your_webhook_url_here" # replace with your discord webhook url
 KEYWORDS_TO_MENTION = ["keyword1", "keyword2", "keyword3",]  # Add important keywords here, Add more as needed
 MENTION_ROLE_ID = "1234567891234567890"  # Replace with your Discord role ID
-TIMEOUT_THRESHOLD = 210  # Timeout for waiting calls, change depending on how long your audio files take to process
+TIMEOUT_THRESHOLD = 60  # Timeout for waiting calls, change depending on how long your audio files take to process (in seconds)
 username = "custom_username_here" # Custom username for webhook
 avatar_url = "your_image_url_here" # Custom avatar for webhook
 
 # Target ID Mapping (mapping target labels to human-readable names)
 TARGETID_MAPPING = {
-    "12345": "Fire Department",
-    "67890": "Police Department",
+    "12345": "Police Department",
+    "67890": "Fire Department",
     # Add more mappings as needed
 }
 
@@ -58,8 +58,8 @@ def send_to_discord(callid, calltime, targetid, text):
             "title": "📡 New Transmission",
             "color": 0xFF0088,  # Change this value to your desired color
             "fields": [
-                {"name": "Call ID", "value": str(callid), "inline": True},
-                {"name": "Call Time", "value": formatted_calltime, "inline": True},
+                {"name": "🔗Call ID", "value": str(callid), "inline": True},
+                {"name": "⏰Call Time", "value": formatted_calltime, "inline": True},
                 {"name": "🗣️Talk Group", "value": readable_target, "inline": True},  # Corrected: Use readable_target
                 {"name": "📝Transcription", "value": text, "inline": False}
             ],
