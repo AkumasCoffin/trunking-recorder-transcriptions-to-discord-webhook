@@ -7,6 +7,9 @@ Sends call info and transcription info from trunking recorder's sqlite database 
 ### or manualy install requests via pip
 ```python -m pip install requests```
 
+##Configuration
+Set your database path, discord webhook, keywords, discord role id, timeout threshold, and the webhhooks custom username and avatar in main.py
+
 ## Usage
 ### Run the main.py python file in the terminal/CMD using python
 ```python main.py``` or 
