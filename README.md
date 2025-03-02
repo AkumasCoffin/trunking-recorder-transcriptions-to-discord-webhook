@@ -1,7 +1,13 @@
 # Trunking Recorder Transcriptions To Discord Webhook
 Sends call info and transcription info from trunking recorder's sqlite database to a discord webhook when the text field (transcription info) is updated by either azure speech to text service or a OpenAI Whisper server
 
-## Prerequisites
+## Fetures 
+* Keyword detection
+* Discord Ping for Keywords
+* custom avatar and username for the discord webhook
+* Talk Group mappings for known talk group's
+
+# Prerequisites
 ### auto install via python's module manager pip
 ```pip install -r requirements.txt```
 ### or manualy install requests via pip
@@ -16,9 +22,3 @@ Sends call info and transcription info from trunking recorder's sqlite database 
 ```py main.py```
 
 ### has been tested on windows, please let me know if theres any issues with linux
-
-## Fetures 
-* Keyword detection
-* Discord Ping for Keywords
-* custom avatar and username for the discord webhook
-* Talk Group mappings for known talk group's
