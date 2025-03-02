@@ -16,3 +16,9 @@ Sends call info and transcription info from trunking recorder's sqlite database 
 ```py main.py```
 
 ### has been tested on windows, please let me know if theres any issues with linux
+
+## Fetures 
+* Keyword detection
+* Discord Ping for Keywords
+* custom avatar and username for the discord webhook
+* Talk Group mappings for known talk group's
