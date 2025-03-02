@@ -1,47 +1,81 @@
 import time
+import json
 from datetime import datetime
 import requests
 import sqlite3
 from collections import deque
 
-DATABASE_PATH = r"path/to/trunking_recorder.sqlite3" # add a lower case "r" before the first " if you use \
-DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/your_webhook_url"
-KEYWORDS_TO_MENTION = ["urgent", "fire", "police", "rescue"]  # Add important keywords here
-MENTION_ROLE_ID = "123456789012345678"  # Replace with your Discord role ID
-TIMEOUT_THRESHOLD = 160  # Timeout for waiting calls (10 mins)
+# Configurations
+DATABASE_PATH = r"your_database_path_here" # replace with your database path
+DISCORD_WEBHOOK_URL = "your_webhook_url_here" # replace with your discord webhook url
+KEYWORDS_TO_MENTION = ["keyword1", "keyword2", "keyword3",]  # Add important keywords here, Add more as needed
+MENTION_ROLE_ID = "1234567891234567890"  # Replace with your Discord role ID
+TIMEOUT_THRESHOLD = 210  # Timeout for waiting calls, change depending on how long your audio files take to process
+username = "custom_username_here" # Custom username for webhook
+avatar_url = "your_image_url_here" # Custom avatar for webhook
 
-# Don't change below this line, unless you know what your doing
+# Target ID Mapping (mapping target labels to human-readable names)
+TARGETID_MAPPING = {
+    "12345": "Illawarra Operations - NSWAS",
+    "67890": "Illawarra District A - RFS",
+    # Add more mappings as needed
+}
 
+# Don't change below this line, unless you know what you're doing
 TEXT_FETCH_DELAY = 1  # Wait time before pulling text data
 
 # Track sent call IDs to prevent duplicates
 sent_calls = set()
 
 def convert_unix_timestamp(calltime):
-    """Convert a Unix timestamp to a human-readable format (DD-MM-YYYY HH:MM:SS)"""
+    """Convert a Unix timestamp to a human-readable format (DD-MM-YYYY SS:MM:HH)"""
     return datetime.utcfromtimestamp(calltime).strftime('%d-%m-%Y %S:%M:%H')
+
+def convert_local_timestamp():
+    """Convert the current local timestamp to a human-readable format (DD-MM-YYYY HH:MM:SS)"""
+    return datetime.now().strftime('%d-%m-%Y %H:%M:%S')  # Local time format
 
 def send_to_discord(callid, calltime, targetid, text):
     """Send call details to Discord webhook"""
-    formatted_calltime = convert_unix_timestamp(calltime)
-    mentions = [f"<@&{MENTION_ROLE_ID}>" for kw in KEYWORDS_TO_MENTION if kw.lower() in text.lower()]
+    formatted_calltime = convert_local_timestamp()  # Use the current local time
+    
+    # Get the readable target name from the mapping, or use the original targetid if not found
+    readable_target = TARGETID_MAPPING.get(str(targetid), str(targetid))  # Use targetid if not found in the dictionary
+    
+    mentions = []
+    triggered_keywords = []  # List to track keywords/phrases that triggered mentions
+    
+    # Check for each keyword/phrase in the text
+    for phrase in KEYWORDS_TO_MENTION:
+        if phrase.lower() in text.lower():
+            mentions.append(f"<@&{MENTION_ROLE_ID}>")
+            triggered_keywords.append(phrase)  # Add the triggered keyword to the list
     
     embed = {
+        "username": username,  
+        "avatar_url": avatar_url,  
         "embeds": [{
-            "title": f"Call {callid} Details",
-            "color": FCBA03,
+            "title": "📡 New Transmission",
+            "color": 0xFF0088,  # Change this value to your desired color
             "fields": [
                 {"name": "Call ID", "value": str(callid), "inline": True},
                 {"name": "Call Time", "value": formatted_calltime, "inline": True},
-                {"name": "Target ID", "value": str(targetid), "inline": True},
-                {"name": "Text", "value": text, "inline": False}
+                {"name": "🗣️Talk Group", "value": readable_target, "inline": True},  # Corrected: Use readable_target
+                {"name": "📝Transcription", "value": text, "inline": False}
             ],
-            "footer": {"text": "Trunking Recorder"}
+            "footer": {"text": f"ID: {transcription_id}"}
         }]
     }
     
     if mentions:
         embed["content"] = " ".join(mentions)
+    
+    if triggered_keywords:
+        embed["embeds"][0]["fields"].append({
+            "name": "Triggered Keyword(s)",
+            "value": ", ".join(triggered_keywords),  # Display the triggered keywords
+            "inline": False
+        })
 
     response = requests.post(DISCORD_WEBHOOK_URL, json=embed)
 
@@ -61,6 +95,7 @@ def get_last_processed_callid():
         cursor.execute("SELECT MAX(callid) FROM calls")
         last_callid = cursor.fetchone()[0]
         conn.close()
+        print(f"[DEBUG] Last processed callid: {last_callid}")  # Add debug print
         return last_callid if last_callid else 0
     except sqlite3.Error as e:
         print(f"[ERROR] Database error: {e}")
@@ -74,6 +109,7 @@ def get_new_transcriptions(last_callid):
         cursor.execute("SELECT callid, calltime, targetid, text FROM calls WHERE callid > ? ORDER BY callid ASC", (last_callid,))
         new_records = cursor.fetchall()
         conn.close()
+        print(f"[DEBUG] Fetched {len(new_records)} new records.")  # Add debug print
         return new_records
     except sqlite3.Error as e:
         print(f"[ERROR] Database error: {e}")
