@@ -63,7 +63,7 @@ def send_to_discord(callid, calltime, targetid, text):
                 {"name": "🗣️Talk Group", "value": readable_target, "inline": True},  # Corrected: Use readable_target
                 {"name": "📝Transcription", "value": text, "inline": False}
             ],
-            "footer": {"text": f"ID: {transcription_id}"}
+            "footer": {"text": f"Talk Group ID: {targetid}"}
         }]
     }
     
