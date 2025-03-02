@@ -11,6 +11,7 @@ DISCORD_WEBHOOK_URL = "your_webhook_url_here" # replace with your discord webhoo
 KEYWORDS_TO_MENTION = ["keyword1", "keyword2", "keyword3",]  # Add important keywords here, Add more as needed
 MENTION_ROLE_ID = "1234567891234567890"  # Replace with your Discord role ID
 TIMEOUT_THRESHOLD = 60  # Timeout for waiting calls, change depending on how long your audio files take to process (in seconds)
+POLL_INTERVAL = 10  # Set the polling interval (in seconds)
 username = "custom_username_here" # Custom username for webhook
 avatar_url = "your_image_url_here" # Custom avatar for webhook
 
@@ -180,7 +181,7 @@ def main():
                 print(f"[WAIT] Text still unavailable for callid {callid}, retrying later.")
                 i += 1  # Only increment if we don't remove an item
 
-        time.sleep(10)  # Wait before checking again
+        time.sleep(POLL_INTERVAL)  # Wait before checking again
 
 if __name__ == "__main__":
     main()
