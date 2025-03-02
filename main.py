@@ -16,8 +16,8 @@ avatar_url = "your_image_url_here" # Custom avatar for webhook
 
 # Target ID Mapping (mapping target labels to human-readable names)
 TARGETID_MAPPING = {
-    "12345": "Illawarra Operations - NSWAS",
-    "67890": "Illawarra District A - RFS",
+    "12345": "Fire Department",
+    "67890": "Police Department",
     # Add more mappings as needed
 }
 
