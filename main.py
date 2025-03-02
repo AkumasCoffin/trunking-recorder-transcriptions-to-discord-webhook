@@ -14,7 +14,7 @@ TIMEOUT_THRESHOLD = 60  # Timeout for waiting calls, change depending on how lon
 username = "custom_username_here" # Custom username for webhook
 avatar_url = "your_image_url_here" # Custom avatar for webhook
 
-# Target ID Mapping (mapping target labels to human-readable names)
+# Talkgroup ID Mapping (mapping target labels to human-readable names)
 TARGETID_MAPPING = {
     "12345": "Police Department",
     "67890": "Fire Department",
