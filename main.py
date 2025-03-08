@@ -32,13 +32,9 @@ def convert_unix_timestamp(calltime):
     """Convert a Unix timestamp to a human-readable format (DD-MM-YYYY SS:MM:HH)"""
     return datetime.utcfromtimestamp(calltime).strftime('%d-%m-%Y %S:%M:%H')
 
-def convert_local_timestamp():
-    """Convert the current local timestamp to a human-readable format (DD-MM-YYYY HH:MM:SS)"""
-    return datetime.now().strftime('%d-%m-%Y %H:%M:%S')  # Local time format
-
 def send_to_discord(callid, calltime, targetid, text):
     """Send call details to Discord webhook"""
-    formatted_calltime = convert_local_timestamp()  # Use the current local time
+    formatted_calltime = datetime.fromtimestamp(calltime).strftime('%d-%m-%Y %H:%M:%S')
     
     # Get the readable target name from the mapping, or use the original targetid if not found
     readable_target = TARGETID_MAPPING.get(str(targetid), str(targetid))  # Use targetid if not found in the dictionary
