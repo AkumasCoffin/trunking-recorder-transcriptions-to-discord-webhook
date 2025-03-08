@@ -1,1 +1,2 @@
 requests
+# sqlite3 is included in Python's standard library
